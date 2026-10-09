@@ -4,7 +4,7 @@ Top-down naval shooter built with React, TypeScript (strict), PixiJS, TanStack Q
 
 **Live demo:** https://pirate-battle-green.vercel.app (ranking and match history use mocked APIs, MSW runs in the published build)
 
-
+> AI usage: this project was built with AI assistance (allowed by the challenge); the author reviews and owns the code.
 
 Documentation: [`ARCHITECTURE.md`](ARCHITECTURE.md) (design decisions), [`docs/performance.md`](docs/performance.md) (profiling evidence), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (requirements), [`LICENSES.md`](LICENSES.md) (assets).
 

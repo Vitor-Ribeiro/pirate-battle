@@ -31,6 +31,7 @@ function TouchButton({ command, icon, label, getHost }: ButtonProps) {
       aria-label={label}
       style={{ backgroundImage: `url(${ui(pressed ? 'button_round_pressed' : 'button_round_normal')})` }}
       onPointerDown={(e: PointerEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         try {
           e.currentTarget.setPointerCapture(e.pointerId);
         } catch {
@@ -42,6 +43,7 @@ function TouchButton({ command, icon, label, getHost }: ButtonProps) {
       onPointerCancel={() => set(false)}
       onLostPointerCapture={() => set(false)}
       onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
     >
       <img src={ui(icon)} alt="" draggable={false} />
     </button>
