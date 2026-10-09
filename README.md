@@ -2,17 +2,36 @@
 
 Top-down naval shooter built with React, TypeScript (strict), PixiJS, TanStack Query, Axios, MSW and Playwright.
 
-> Status: all features are implemented. The simulation core is unit-tested; browser behaviour (rendering, E2E,
-> visual baselines, profiling) must be verified locally. See `docs/CHECKLIST.md` (`[~]` = implemented, not yet browser-verified).
->
+**Live demo:** https://pirate-battle-green.vercel.app (ranking and match history use mocked APIs, MSW runs in the published build)
+
 > AI usage: this project was built with AI assistance (allowed by the challenge); the author reviews and owns the code.
+
+Documentation: [`ARCHITECTURE.md`](ARCHITECTURE.md) (design decisions), [`docs/performance.md`](docs/performance.md) (profiling evidence), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (requirements), [`LICENSES.md`](LICENSES.md) (assets).
 
 ## Setup
 
+Requirements: Node.js 18 or newer (Vite 5) and npm. Tested on Windows 11 with Chrome.
+
 ```bash
-npm install          # also creates package-lock.json (commit it)
-npm run msw:init     # generates public/mockServiceWorker.js (commit it)
-npm run dev
+git clone https://github.com/Vitor-Ribeiro/pirate-battle.git
+cd pirate-battle
+npm install                       # also generates public/mockServiceWorker.js (postinstall)
+npm run dev                       # http://localhost:5173
+```
+
+Production build, as published:
+
+```bash
+npm run build
+npm run preview                   # http://localhost:4173
+```
+
+Tests (first time only: `npx playwright install chromium`):
+
+```bash
+npm run typecheck && npm run lint && npm test    # types, lint, unit tests
+npm run test:e2e                                 # Playwright, desktop and mobile Chromium
+npm run test:e2e:report                          # open the HTML report
 ```
 
 Copy `.env.example` to `.env` if you need to change the defaults.
@@ -37,7 +56,7 @@ Copy `.env.example` to `.env` if you need to change the defaults.
 | `npm run test:e2e:update` | Update visual baselines |
 | `npm run test:e2e:report` | Open the HTML report |
 
-First time with Playwright: `npx playwright install chromium`.
+The first Playwright run builds the app in e2e mode and takes a few minutes (software WebGL).
 
 ## Controls
 
