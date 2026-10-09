@@ -68,7 +68,6 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--mute
   .touch-group { flex-direction: column; gap: 6px; }
   .touch-button { width: 48px; height: 48px; opacity: 0.9; }
   .touch-button img { width: 28px; height: 28px; }
-  .touch-button[aria-label='Move forward'] { order: -1; }
   /* Compact HUD in the 48 px strip above the arena (ArenaRenderer reserves it). */
   .hud { padding-top: 4px; align-items: center; }
   .hud-health { transform: scale(0.75); transform-origin: top left; margin-right: -64px; margin-bottom: -12px; }
