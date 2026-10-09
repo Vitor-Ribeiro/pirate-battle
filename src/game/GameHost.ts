@@ -28,6 +28,7 @@ export class GameHost {
   private sim: Simulation | null = null;
   private renderer: ArenaRenderer | null = null;
   private disposed = false;
+  private resizeTimer = 0;
   private endTimer: number | undefined;
   private endNotified = false;
   private lastHudMs = -Infinity;
@@ -85,6 +86,8 @@ export class GameHost {
     this.keyboard.attach();
     document.addEventListener('visibilitychange', this.onVisibility);
     window.addEventListener('blur', this.onBlur);
+    window.addEventListener('orientationchange', this.onViewport);
+    window.visualViewport?.addEventListener('resize', this.onViewport);
     void this.audio.load();
     if (E2E_ENABLED) window.__pb = this.createTestApi();
     app.ticker.add(this.tick);
@@ -194,6 +197,18 @@ export class GameHost {
   };
   private readonly onBlur = (): void => this.pause();
 
+  /** Phones report the new size late after a rotation or when the browser bars move, so re-measure a few times. */
+  private readonly onViewport = (): void => {
+    window.clearTimeout(this.resizeTimer);
+    const measure = (): void => this.app?.resize();
+    measure();
+    window.requestAnimationFrame(measure);
+    this.resizeTimer = window.setTimeout(() => {
+      measure();
+      this.resizeTimer = window.setTimeout(measure, 400);
+    }, 200);
+  };
+
   pause(): void {
     if (this.sim?.getState().status !== 'running') return;
     this.sim.pause();
@@ -230,6 +245,9 @@ export class GameHost {
     this.touch.clear();
     document.removeEventListener('visibilitychange', this.onVisibility);
     window.removeEventListener('blur', this.onBlur);
+    window.removeEventListener('orientationchange', this.onViewport);
+    window.visualViewport?.removeEventListener('resize', this.onViewport);
+    window.clearTimeout(this.resizeTimer);
     this.audio.dispose();
     this.renderer?.dispose();
     this.renderer = null;
