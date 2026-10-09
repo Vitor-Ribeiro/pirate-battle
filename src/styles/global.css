@@ -61,3 +61,12 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--mute
   .hud-pause { width: 40px; height: 40px; }
   .hud-pause img { width: 24px; height: 24px; }
 }
+/* Phones on their side: the 16:9 arena leaves dark bands left and right, so stack each button group
+   vertically inside them instead of covering the sea. */
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
+  .touch-controls { align-items: flex-end; padding-left: calc(env(safe-area-inset-left, 0px) + 6px); padding-right: calc(env(safe-area-inset-right, 0px) + 6px); }
+  .touch-group { flex-direction: column; gap: 6px; }
+  .touch-button { width: 48px; height: 48px; opacity: 0.9; }
+  .touch-button img { width: 28px; height: 28px; }
+  .touch-button[aria-label='Move forward'] { order: -1; }
+}
