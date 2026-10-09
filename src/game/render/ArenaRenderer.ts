@@ -24,6 +24,11 @@ interface ShipView {
 interface Effect { sprite: Sprite; ageMs: number; lifeMs: number; baseScale: number; explode: boolean }
 
 /** Reads the simulation state and draws it. It never changes the game rules. */
+/** Same query as the compact touch layout in global.css. */
+const LANDSCAPE_PHONE = '(pointer: coarse) and (orientation: landscape) and (max-height: 520px)';
+/** Height reserved above the arena for the compact HUD on landscape phones (CSS px). */
+const HUD_STRIP_PX = 48;
+
 export class ArenaRenderer {
   private readonly water: TilingSprite;
   private readonly root = new Container();
@@ -58,16 +63,21 @@ export class ArenaRenderer {
     this.screenW = width;
     this.screenH = height;
     const a = this.config.arena;
-    const s = Math.min(width / a.widthPx, height / a.heightPx);
-    const ox = (width - a.widthPx * s) / 2;
-    const oy = (height - a.heightPx * s) / 2;
+    // Phones on their side: keep a strip on top for the HUD so it never covers the sea.
+    const top = window.matchMedia?.(LANDSCAPE_PHONE).matches ? HUD_STRIP_PX : 0;
+    const availH = height - top;
+    const s = Math.min(width / a.widthPx, availH / a.heightPx);
+    const arenaW = a.widthPx * s;
+    const arenaH = a.heightPx * s;
+    const ox = (width - arenaW) / 2;
+    const oy = top + (availH - arenaH) / 2;
     this.root.scale.set(s);
     this.root.position.set(ox, oy);
     this.water.width = width;
     this.water.height = height;
     this.water.tileScale.set((s * WORLD_TILE_PX) / 128);
     this.dim.clear();
-    this.dim.rect(0, 0, width, oy).rect(0, height - oy, width, oy).rect(0, oy, ox, height - 2 * oy).rect(width - ox, oy, ox, height - 2 * oy);
+    this.dim.rect(0, 0, width, oy).rect(0, oy + arenaH, width, height - oy - arenaH).rect(0, oy, ox, arenaH).rect(width - ox, oy, ox, arenaH);
     this.dim.fill({ color: 0x021018, alpha: 0.55 });
   }
 
