@@ -1,0 +1,46 @@
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) { --bg: #07202b; --panel: #0e3445; --ink: #eaf6fb; --muted: #9bbccb; --accent: #f5b942; }
+}
+:root { --bg: #e8f3f7; --panel: #ffffff; --ink: #0b2530; --muted: #46606c; --accent: #b36b00; }
+:root[data-theme='dark'] { --bg: #07202b; --panel: #0e3445; --ink: #eaf6fb; --muted: #9bbccb; --accent: #f5b942; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: system-ui, sans-serif; }
+button, input { font: inherit; min-height: 44px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.screen { max-width: 520px; margin: 0 auto; padding: 24px 16px; }
+.card { background: var(--panel); border-radius: 16px; padding: 16px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.arena { position: fixed; inset: 0; touch-action: none; }
+.overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(2, 16, 24, 0.7); padding: 16px; }
+.overlay .card { max-width: 360px; width: 100%; }
+progress { width: 100%; height: 14px; }
+.hud { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 12px) 0 calc(env(safe-area-inset-left, 0px) + 12px); pointer-events: none; }
+.hud-health { position: relative; width: 256px; height: 48px; background-size: 256px 48px; flex: none; }
+.hud-health-fill { position: absolute; left: 30px; top: 15px; width: 196px; height: 20px; overflow: hidden; }
+.hud-health-fill i { display: block; height: 100%; background-size: 256px 48px; background-position: -30px -15px; }
+.hud-right { display: flex; gap: 8px; align-items: center; }
+.hud-counter { display: flex; align-items: center; gap: 6px; width: 120px; height: 42px; padding: 0 12px; box-sizing: border-box; background-size: 100% 100%; color: #fff; font-weight: 700; font-size: 1.05rem; }
+.hud-counter img { width: 28px; height: 28px; }
+.round-button { width: 52px; height: 52px; min-height: 0; padding: 0; border: 0; background: transparent center / 100% 100% no-repeat; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto; cursor: pointer; }
+.round-button img { width: 32px; height: 32px; pointer-events: none; }
+@media (max-width: 640px) {
+  .hud { flex-wrap: wrap; row-gap: 4px; }
+  .hud-health { transform: scale(0.75); transform-origin: top left; margin-right: -64px; margin-bottom: -12px; }
+  .hud-right { margin-left: auto; gap: 4px; }
+  .hud-counter { width: 84px; padding: 0 8px; }
+}
+.touch-controls { display: none; position: fixed; left: 0; right: 0; bottom: 0; justify-content: space-between; padding: 0 calc(env(safe-area-inset-right, 0px) + 12px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 12px); pointer-events: none; }
+.touch-group { display: flex; gap: 10px; }
+.touch-button { width: 64px; height: 64px; touch-action: none; user-select: none; -webkit-user-select: none; }
+@media (pointer: coarse) { .touch-controls { display: flex; } }
+/* Portrait phones (about 360 to 430 px): six buttons must fit in one row. */
+@media (max-width: 480px) { .touch-group { gap: 6px; } .touch-button { width: 48px; height: 48px; } .touch-button img { width: 28px; height: 28px; } .touch-controls { padding-left: calc(env(safe-area-inset-left, 0px) + 8px); padding-right: calc(env(safe-area-inset-right, 0px) + 8px); } }
+
+.muted { color: var(--muted); }
+.card + .card { margin-top: 12px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--muted); }
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+[role='tab'] { margin-right: 6px; }
+[role='tab'][aria-selected='true'] { border: 2px solid var(--accent); }

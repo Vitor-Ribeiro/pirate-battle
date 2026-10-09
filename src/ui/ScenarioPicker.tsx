@@ -1,0 +1,43 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { invalidateLists } from '../api/queries';
+import { getScenario, resetMocks, SCENARIOS, setScenario, type ScenarioName } from '../mocks/scenarios';
+
+/** Developer panel: choose a network scenario and reset the mock backend. Works in the published build. */
+export function ScenarioPicker() {
+  const client = useQueryClient();
+  const [value, setValue] = useState<ScenarioName>(getScenario());
+
+  const change = (name: ScenarioName) => {
+    setScenario(name);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('scenario')) { // the URL parameter would win over the selection
+      url.searchParams.delete('scenario');
+      window.history.replaceState(null, '', url);
+    }
+    setValue(name);
+    void invalidateLists(client);
+  };
+
+  return (
+    <details className="card">
+      <summary>Network scenarios (mock API)</summary>
+      <p>
+        <label htmlFor="scenario">Scenario</label>{' '}
+        <select id="scenario" value={value} onChange={(e) => change(e.target.value as ScenarioName)}>
+          {SCENARIOS.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>{' '}
+        <button
+          onClick={() => {
+            resetMocks();
+            setValue('success');
+            client.clear();
+            void invalidateLists(client);
+          }}
+        >
+          Reset mocks
+        </button>
+      </p>
+    </details>
+  );
+}
