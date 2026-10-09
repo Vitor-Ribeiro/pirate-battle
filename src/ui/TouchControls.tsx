@@ -1,4 +1,4 @@
-import { useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import type { Commands } from '../game/core/types';
 import type { GameHost } from '../game/GameHost';
 
@@ -20,12 +20,26 @@ interface ButtonProps { command: keyof Commands; icon: string; label: string; ge
 /** Each button owns its pointer, so moving and firing work at the same time (multi-touch). */
 function TouchButton({ command, icon, label, getHost }: ButtonProps) {
   const [pressed, setPressed] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+  // iOS starts text selection / the magnifier on a long press unless touchstart is cancelled (needs a non-passive listener).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const stop = (e: TouchEvent) => e.preventDefault();
+    el.addEventListener('touchstart', stop, { passive: false });
+    el.addEventListener('touchmove', stop, { passive: false });
+    return () => {
+      el.removeEventListener('touchstart', stop);
+      el.removeEventListener('touchmove', stop);
+    };
+  }, []);
   const set = (value: boolean) => {
     getHost()?.touch.set(command, value);
     setPressed(value);
   };
   return (
     <button
+      ref={ref}
       type="button"
       className="round-button touch-button"
       aria-label={label}
