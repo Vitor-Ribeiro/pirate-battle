@@ -21,7 +21,7 @@
 - Player projectiles only test against enemies, and enemy projectiles only against the player.
 - Chaser: damages the player on contact and explodes (no score). Destroyed enemies are skipped by every system.
 - At 520 px/s a projectile moves 5.2 px per 10 ms step, which is smaller than the smallest target radius plus projectile radius, so fast projectiles do not tunnel through ships.
-- Limitation: ships do not collide with each other; islands are circles, not the exact sprite outline.
+- Enemies separate softly when they overlap, so they do not stack on one spot; a projectile hits the closest overlapping enemy. Limitation: islands are circles, not the exact sprite outline.
 
 ## 4. Resource management
 - Textures are loaded once (with progress and a readable error) and cached across matches.
@@ -45,6 +45,6 @@
 ## 8. Known limitations and balancing decisions
 - Only the simulation core and the performance recorder were executed in tests during development; React, Pixi, MSW and Playwright code needs a local run.
 - Pixi may cache a rejected asset load, so the "retry" after an asset failure might need a page reload (to be confirmed in the browser).
-- Ships do not collide with each other; islands are circles.
+- Enemies are pushed apart when they overlap (soft separation), and a projectile damages the closest overlapping enemy. The player and enemies do not push each other (the Chaser explodes on contact); islands are circles.
 - Balance numbers (damage, cooldowns, hp, spawn rules) are initial values chosen for a playable match, easy to tune in `gameConfig.ts`.
 - Asset license must be confirmed against the challenge terms.

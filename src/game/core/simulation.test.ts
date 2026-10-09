@@ -222,3 +222,35 @@ describe('enemy navigation', () => {
     expect(st.player.health).toBeLessThan(st.player.maxHealth);
   });
 });
+
+describe('overlapping enemies', () => {
+  it('a projectile damages the closest overlapping enemy, not the first in the list', () => {
+    const sim = createSimulation(makeConfig(tough), 1);
+    const st = mutable(sim);
+    st.enemies.length = 0;
+    st.player.pos = { x: 1500, y: 800 };
+    const far = enemyAt(901, 'shooter', 800, 300, 40); // first in the list
+    const near = enemyAt(902, 'shooter', 800, 320, 40); // the circles overlap
+    far.radius = 40;
+    near.radius = 40;
+    st.enemies.push(far, near);
+    // A still projectile inside both circles, closer to `near`.
+    st.projectiles.push({ id: 950, owner: 'player', pos: { x: 800, y: 316 }, vel: { x: 0, y: 0 }, damage: 10, ttlMs: 1000, alive: true });
+    run(sim, 10, NO_COMMANDS);
+    expect(near.health).toBe(30);
+    expect(far.health).toBe(40);
+  });
+
+  it('enemies pushed onto the same spot separate', () => {
+    const sim = createSimulation(makeConfig(tough), 1);
+    const st = mutable(sim);
+    st.enemies.length = 0;
+    st.player.pos = { x: 1500, y: 800 };
+    const a = enemyAt(911, 'shooter', 800, 450, 40);
+    const b = enemyAt(912, 'shooter', 800, 450, 40); // exactly on top of each other
+    st.enemies.push(a, b);
+    run(sim, 200, NO_COMMANDS);
+    const gap = Math.hypot(a.pos.x - b.pos.x, a.pos.y - b.pos.y);
+    expect(gap).toBeGreaterThanOrEqual((a.radius + b.radius) * 0.85);
+  });
+});

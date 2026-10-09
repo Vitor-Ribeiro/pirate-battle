@@ -26,14 +26,23 @@ export function updateProjectiles(w: World, dtMs: number): void {
     }
 
     if (pr.owner === 'player') {
+      // With overlapping ships the projectile must hit the closest one, not whichever comes first in the list.
+      let target: (typeof state.enemies)[number] | null = null;
+      let bestGap = Infinity;
       for (const e of state.enemies) {
-        if (!e.alive || distance(pr.pos, e.pos) > e.radius + PROJECTILE_RADIUS) continue;
+        if (!e.alive) continue;
+        const gap = distance(pr.pos, e.pos) - e.radius - PROJECTILE_RADIUS;
+        if (gap <= 0 && gap < bestGap) {
+          bestGap = gap;
+          target = e;
+        }
+      }
+      if (target) {
         pr.alive = false;
-        if (damageEnemy(w, e, pr.damage)) {
+        if (damageEnemy(w, target, pr.damage)) {
           state.score += 1; // only enemies destroyed by the player's attacks score
           state.kills += 1;
         }
-        break;
       }
     } else {
       const p = state.player;

@@ -29,6 +29,35 @@ function steerHeading(w: World, from: { x: number; y: number }, bodyRadius: numb
   return best;
 }
 
+/** Soft separation: overlapping enemies are pushed apart so they never stack on one spot. */
+function separateEnemies(w: World): void {
+  const list = w.state.enemies;
+  for (let i = 0; i < list.length; i++) {
+    const a = list[i]!;
+    if (!a.alive) continue;
+    for (let j = i + 1; j < list.length; j++) {
+      const b = list[j]!;
+      if (!b.alive) continue;
+      let dx = b.pos.x - a.pos.x;
+      let dy = b.pos.y - a.pos.y;
+      let d = Math.hypot(dx, dy);
+      const min = (a.radius + b.radius) * 0.9;
+      if (d >= min) continue;
+      if (d < 0.001) { // exactly on top of each other: pick a stable direction
+        dx = Math.cos(a.id);
+        dy = Math.sin(a.id);
+        d = 1;
+      }
+      const push = (min - d) / 2;
+      a.pos.x -= (dx / d) * push;
+      a.pos.y -= (dy / d) * push;
+      b.pos.x += (dx / d) * push;
+      b.pos.y += (dy / d) * push;
+    }
+  }
+  for (const e of list) if (e.alive) resolveShipTerrain(w, e);
+}
+
 export function updateEnemies(w: World, dtMs: number): void {
   const player = w.state.player;
   const dt = dtMs / 1000;
@@ -68,4 +97,5 @@ export function updateEnemies(w: World, dtMs: number): void {
       }
     }
   }
+  separateEnemies(w);
 }
