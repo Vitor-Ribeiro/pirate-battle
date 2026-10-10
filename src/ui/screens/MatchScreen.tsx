@@ -18,8 +18,8 @@ export function MatchScreen({ options, onFinish, onExit }: Props) {
   const hostRef = useRef<GameHost | null>(null);
   const onFinishRef = useRef(onFinish);
   onFinishRef.current = onFinish;
-  const [session] = useState(() => createSessionConfig(options)); // snapshot taken when the match starts
-  const [attempt, setAttempt] = useState(0); // "Retry" after an asset failure
+  const [session] = useState(() => createSessionConfig(options));
+  const [attempt, setAttempt] = useState(0);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const status = useSyncExternalStore(hudStore.subscribe, () => hudStore.getSnapshot().status);
@@ -35,12 +35,11 @@ export function MatchScreen({ options, onFinish, onExit }: Props) {
       if (!host.isDisposed) setError(e instanceof Error ? e.message : 'Unknown error');
     });
     return () => {
-      host.dispose(); // runs on unmount and between the two Strict Mode mounts
+      host.dispose();
       if (hostRef.current === host) hostRef.current = null;
     };
   }, [session, attempt]);
 
-  // These keys exist only while the match screen is mounted.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Escape' || e.code === 'KeyP') {

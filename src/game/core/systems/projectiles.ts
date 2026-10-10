@@ -4,7 +4,6 @@ import { damageEnemy, damagePlayer } from './combat';
 
 export const PROJECTILE_RADIUS = 4;
 
-/** Moves projectiles and resolves hits. A projectile is removed on its first hit, so it damages once. */
 export function updateProjectiles(w: World, dtMs: number): void {
   const { state, config } = w;
   const dt = dtMs / 1000;
@@ -21,12 +20,11 @@ export function updateProjectiles(w: World, dtMs: number): void {
       continue;
     }
     if (state.islands.some((i) => distance(pr.pos, i) <= i.radius + PROJECTILE_RADIUS)) {
-      pr.alive = false; // islands block projectiles
+      pr.alive = false;
       continue;
     }
 
     if (pr.owner === 'player') {
-      // With overlapping ships the projectile must hit the closest one, not whichever comes first in the list.
       let target: (typeof state.enemies)[number] | null = null;
       let bestGap = Infinity;
       for (const e of state.enemies) {
@@ -40,7 +38,7 @@ export function updateProjectiles(w: World, dtMs: number): void {
       if (target) {
         pr.alive = false;
         if (damageEnemy(w, target, pr.damage)) {
-          state.score += 1; // only enemies destroyed by the player's attacks score
+          state.score += 1;
           state.kills += 1;
         }
       }

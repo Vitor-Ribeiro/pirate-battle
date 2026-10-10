@@ -2,7 +2,6 @@ import { useEffect, useRef, type KeyboardEvent } from 'react';
 
 interface Props { onResume: () => void; onExit: () => void }
 
-/** Modal dialog: focus moves in, Tab stays inside, focus returns when it closes. */
 export function PauseDialog({ onResume, onExit }: Props) {
   const resumeRef = useRef<HTMLButtonElement>(null);
   const exitRef = useRef<HTMLButtonElement>(null);

@@ -1,7 +1,6 @@
 import { apiClient } from './client';
 import type { HistoryParams, MatchRecord, Page, RankingEntry, RankingParams } from './contracts';
 
-/** A 200 response with the wrong shape (proxy page, bad deploy) must become an error state, not a crash. */
 function assertPage<T>(data: unknown): Page<T> {
   const d = data as Partial<Page<T>> | null;
   if (!d || typeof d !== 'object' || !Array.isArray(d.items) || typeof d.total !== 'number') {
@@ -20,7 +19,6 @@ export async function fetchHistory(params: HistoryParams, signal?: AbortSignal):
   return assertPage<MatchRecord>(data);
 }
 
-/** PUT with the client-generated id: repeating it returns the existing record (no duplicates). */
 export async function submitMatch(record: MatchRecord): Promise<MatchRecord> {
   const { data } = await apiClient.put<MatchRecord>(`/matches/${record.id}`, record);
   if (!data || typeof data !== 'object' || typeof (data as MatchRecord).id !== 'string') throw new Error('Unexpected response from the server');

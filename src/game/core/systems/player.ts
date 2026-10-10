@@ -37,14 +37,13 @@ export function updatePlayer(w: World, cmd: Commands, dtMs: number): void {
   }
 }
 
-/** side: -1 = left, +1 = right. Fires N parallel projectiles along the ship's side. */
 function fireBroadside(w: World, side: -1 | 1): void {
   const p = w.state.player;
   const weapon = w.config.player.sideWeapon;
   const dir = p.heading + side * (Math.PI / 2);
   const n = weapon.projectilesPerSide;
   for (let i = 0; i < n; i++) {
-    const along = (i - (n - 1) / 2) * weapon.lateralSpacingPx; // spread along the hull, same direction
+    const along = (i - (n - 1) / 2) * weapon.lateralSpacingPx;
     const origin = {
       x: p.pos.x + Math.cos(dir) * p.radius + Math.cos(p.heading) * along,
       y: p.pos.y + Math.sin(dir) * p.radius + Math.sin(p.heading) * along,

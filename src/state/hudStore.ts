@@ -1,4 +1,3 @@
-// Tiny external store: the game publishes at a low rate, React reads it with useSyncExternalStore.
 export interface HudSnapshot {
   score: number;
   timeLeftSec: number;

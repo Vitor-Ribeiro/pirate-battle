@@ -57,7 +57,7 @@ describe('match rules', () => {
     run(sim, 100, NO_COMMANDS);
     expect(s.status).toBe('ended');
     expect(s.endReason).toBe('player_destroyed');
-    expect(s.score).toBe(0); // chaser self-destruction does not score
+    expect(s.score).toBe(0);
     const t = s.elapsedMs;
     run(sim, 1_000, cmd({ fireFront: true }));
     expect(s.elapsedMs).toBe(t);
@@ -88,7 +88,7 @@ describe('movement and terrain', () => {
     const sim = createSimulation(makeConfig(), 1);
     const start = { ...sim.getState().player.pos };
     run(sim, 1_000, cmd({ forward: true }));
-    expect(sim.getState().player.pos.y).toBeLessThan(start.y); // initial heading is up
+    expect(sim.getState().player.pos.y).toBeLessThan(start.y);
     const h = sim.getState().player.heading;
     run(sim, 500, cmd({ turnRight: true }));
     expect(sim.getState().player.heading).toBeGreaterThan(h);
@@ -121,7 +121,7 @@ describe('weapons', () => {
       sim.step(10, cmd({ fireFront: true }));
       shots += sim.getState().events.filter((e) => e.type === 'shot').length;
     }
-    expect(shots).toBe(3); // 350 ms cooldown: shots at 0, 350 and 700 ms
+    expect(shots).toBe(3);
   });
 
   it('fires three parallel projectiles per side with the same direction', () => {
@@ -139,7 +139,6 @@ describe('weapons', () => {
   it('player projectiles damage once, score once and are removed', () => {
     const sim = createSimulation(makeConfig(tough), 1);
     const s = mutable(sim);
-    // heading is up: put a weak enemy straight ahead
     s.enemies.push(enemyAt(901, 'shooter', s.player.pos.x, s.player.pos.y - 150, 10));
     sim.step(10, cmd({ fireFront: true }));
     run(sim, 600, NO_COMMANDS);
@@ -156,7 +155,7 @@ describe('weapons', () => {
     }));
     const sim = createSimulation(config, 1);
     const s = mutable(sim);
-    s.enemies.push(enemyAt(902, 'shooter', 800, 200, 10)); // behind the island, in the line of fire
+    s.enemies.push(enemyAt(902, 'shooter', 800, 200, 10));
     sim.step(10, cmd({ fireFront: true }));
     run(sim, 800, NO_COMMANDS);
     expect(s.score).toBe(0);
@@ -167,13 +166,13 @@ describe('weapons', () => {
     const sim = createSimulation(makeConfig(), 1);
     const s = mutable(sim);
     const shooter = enemyAt(903, 'shooter', s.player.pos.x + 200, s.player.pos.y, 40);
-    shooter.heading = Math.PI; // already facing the player (the Shooter only fires when aimed)
+    shooter.heading = Math.PI;
     s.enemies.push(shooter);
     const before = s.player.health;
     run(sim, 900, NO_COMMANDS);
     const dealt = before - s.player.health;
     expect(dealt).toBeGreaterThan(0);
-    expect(dealt % 8).toBe(0); // damage comes in whole projectiles of 8
+    expect(dealt % 8).toBe(0);
   });
 });
 
@@ -218,7 +217,7 @@ describe('enemy navigation', () => {
     st.player.heading = 0;
     st.enemies.push(enemyAt(900, 'chaser', isl.x + isl.radius + 150, isl.y, 30));
     run(sim, 8_000, NO_COMMANDS);
-    expect(st.enemies.find((e) => e.id === 900)?.alive ?? false).toBe(false); // it hit the player (explodes)
+    expect(st.enemies.find((e) => e.id === 900)?.alive ?? false).toBe(false);
     expect(st.player.health).toBeLessThan(st.player.maxHealth);
   });
 });
@@ -229,12 +228,11 @@ describe('overlapping enemies', () => {
     const st = mutable(sim);
     st.enemies.length = 0;
     st.player.pos = { x: 1500, y: 800 };
-    const far = enemyAt(901, 'shooter', 800, 300, 40); // first in the list
-    const near = enemyAt(902, 'shooter', 800, 320, 40); // the circles overlap
+    const far = enemyAt(901, 'shooter', 800, 300, 40);
+    const near = enemyAt(902, 'shooter', 800, 320, 40);
     far.radius = 40;
     near.radius = 40;
     st.enemies.push(far, near);
-    // A still projectile inside both circles, closer to `near`.
     st.projectiles.push({ id: 950, owner: 'player', pos: { x: 800, y: 316 }, vel: { x: 0, y: 0 }, damage: 10, ttlMs: 1000, alive: true });
     run(sim, 10, NO_COMMANDS);
     expect(near.health).toBe(30);
@@ -247,7 +245,7 @@ describe('overlapping enemies', () => {
     st.enemies.length = 0;
     st.player.pos = { x: 1500, y: 800 };
     const a = enemyAt(911, 'shooter', 800, 450, 40);
-    const b = enemyAt(912, 'shooter', 800, 450, 40); // exactly on top of each other
+    const b = enemyAt(912, 'shooter', 800, 450, 40);
     st.enemies.push(a, b);
     run(sim, 200, NO_COMMANDS);
     const gap = Math.hypot(a.pos.x - b.pos.x, a.pos.y - b.pos.y);

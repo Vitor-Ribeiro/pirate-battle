@@ -4,10 +4,10 @@ import type { GameEvent, MatchState, ShipKind, ShipState } from '../core/types';
 import { shipTexture, tex, tile } from './assets';
 
 const SHIP_SCALE = 0.75;
-const SHIP_ART_FACES = Math.PI / 2; // the ship art points down (+y); heading 0 points right
+const SHIP_ART_FACES = Math.PI / 2;
 const WORLD_TILE_PX = 64;
 const BAR_SCALE = 0.42;
-const BAR_FILL = { x: 24, y: 12, w: 112, h: 15 }; // ui_sheet.json: enemy_health layout.fill_rect
+const BAR_FILL = { x: 24, y: 12, w: 112, h: 15 };
 
 interface ShipView {
   container: Container;
@@ -23,10 +23,7 @@ interface ShipView {
 }
 interface Effect { sprite: Sprite; ageMs: number; lifeMs: number; baseScale: number; explode: boolean }
 
-/** Reads the simulation state and draws it. It never changes the game rules. */
-/** Same query as the compact touch layout in global.css. */
 const LANDSCAPE_PHONE = '(pointer: coarse) and (orientation: landscape) and (max-height: 520px)';
-/** Height reserved above the arena for the compact HUD on landscape phones (CSS px). */
 const HUD_STRIP_PX = 48;
 
 export class ArenaRenderer {
@@ -57,13 +54,11 @@ export class ArenaRenderer {
     this.fit();
   }
 
-  /** Fits the whole arena in the screen keeping the aspect ratio; the rest is dimmed. */
   private fit(): void {
     const { width, height } = this.app.screen;
     this.screenW = width;
     this.screenH = height;
     const a = this.config.arena;
-    // Phones on their side: keep a strip on top for the HUD so it never covers the sea.
     const top = window.matchMedia?.(LANDSCAPE_PHONE).matches ? HUD_STRIP_PX : 0;
     const availH = height - top;
     const s = Math.min(width / a.widthPx, availH / a.heightPx);
@@ -140,7 +135,7 @@ export class ArenaRenderer {
       this.shipViews.set(ship.id, view);
     }
     const ratio = ship.health / ship.maxHealth;
-    const stage = ratio > 0.75 ? 0 : ratio > 0.5 ? 1 : ratio > 0.25 ? 2 : 3; // deterioration by remaining health
+    const stage = ratio > 0.75 ? 0 : ratio > 0.5 ? 1 : ratio > 0.25 ? 2 : 3;
     if (stage !== view.stage) {
       view.stage = stage;
       view.sprite.texture = shipTexture(ship.kind as ShipKind, stage);
@@ -211,7 +206,7 @@ export class ArenaRenderer {
   sync(state: Readonly<MatchState>, dtMs: number): void {
     if (this.app.screen.width !== this.screenW || this.app.screen.height !== this.screenH) this.fit();
     if (state.status === 'running') {
-      this.timeMs += dtMs; // visual time stops while paused
+      this.timeMs += dtMs;
       for (const view of this.shipViews.values()) view.flashMs = Math.max(0, view.flashMs - dtMs);
     }
     this.water.tilePosition.set(this.timeMs * 0.01, this.timeMs * 0.006);
@@ -252,7 +247,6 @@ export class ArenaRenderer {
     if (state.status === 'running') this.updateEffects(dtMs);
   }
 
-  /** Destroys display objects. Textures are shared and stay cached for the next match. */
   dispose(): void {
     this.root.destroy({ children: true });
     this.water.destroy();

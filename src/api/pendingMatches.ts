@@ -19,7 +19,6 @@ function write(records: MatchRecord[]): void {
   listeners.forEach((l) => l());
 }
 
-/** Stable snapshot (same array until something changes), safe for useSyncExternalStore. */
 export function listPending(): MatchRecord[] {
   cache ??= read();
   return cache;
@@ -35,7 +34,6 @@ export const pendingStore = {
   getSnapshot: listPending,
 };
 
-/** Saved BEFORE the request, so a refresh or a failure never loses the match. */
 export function enqueue(record: MatchRecord): void {
   write([...listPending().filter((r) => r.id !== record.id), record]);
 }

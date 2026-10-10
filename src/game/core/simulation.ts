@@ -7,9 +7,8 @@ import { updateSpawner } from './systems/spawner';
 import type { Commands, MatchState, ShipState, Simulation } from './types';
 import { compact, type World } from './world';
 
-/** The world advances in fixed steps: same inputs and seed give the same match, at any frame rate. */
 export const FIXED_STEP_MS = 10;
-const MAX_FRAME_MS = 100; // a long frame (tab switch, breakpoint) never causes a huge catch-up
+const MAX_FRAME_MS = 100;
 
 function createPlayer(config: GameplayConfig): ShipState {
   return {
@@ -62,7 +61,7 @@ export function createSimulation(config: GameplayConfig, seed: number): Simulati
   return {
     step(dtMs: number, commands: Commands): void {
       state.events.length = 0;
-      if (state.status !== 'running') return; // paused or ended: nothing moves, shoots, damages, spawns or scores
+      if (state.status !== 'running') return;
       accumulatorMs += Math.min(Math.max(dtMs, 0), MAX_FRAME_MS);
       while (accumulatorMs >= FIXED_STEP_MS && state.status === 'running') {
         accumulatorMs -= FIXED_STEP_MS;
@@ -75,7 +74,7 @@ export function createSimulation(config: GameplayConfig, seed: number): Simulati
     },
     resume(): void {
       if (state.status === 'paused') {
-        accumulatorMs = 0; // nothing from the paused period is replayed
+        accumulatorMs = 0;
         state.status = 'running';
       }
     },

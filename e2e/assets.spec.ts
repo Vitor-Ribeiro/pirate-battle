@@ -1,11 +1,10 @@
 import { expect, test } from './fixtures';
 import { prepare } from './helpers';
 
-// page.route() does not see requests that pass through a service worker (MSW), so these tests run without it.
+
 test.use({ serviceWorkers: 'block' });
 
-// NOTE: this relies on PixiJS allowing a second load of an URL after a failure. If this test fails on the
-// retry step, the asset loader is caching the rejected promise (see ARCHITECTURE.md, known limitations).
+
 test('assets: a loading failure shows an error and "Retry" starts the match', async ({ page }) => {
   await prepare(page, { manualClock: true });
   await page.route('**/assets/png/default/ships/ship_5.png', (route) => route.abort());

@@ -12,7 +12,7 @@ type Screen = 'menu' | 'options' | 'match' | 'result';
 export function App() {
   const [screen, setScreen] = useState<Screen>('menu');
   const [result, setResult] = useState<MatchResult | null>(null);
-  const [matchKey, setMatchKey] = useState(0); // a new key creates a brand new match
+  const [matchKey, setMatchKey] = useState(0);
 
   const handleFinish = useCallback((r: MatchResult) => {
     saveLastResult(r);

@@ -1,15 +1,12 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
-// Opt-in (takes minutes): PERF=1 npx playwright test e2e/performance.spec.ts --project=desktop-chromium
-// Results are written to docs/perf-result.json. Fill docs/performance.md with them and your hardware.
 test.skip(!process.env.PERF, 'set PERF=1 to run the performance measurement');
 test.setTimeout(15 * 60_000);
 
 test('three-minute match: frame rate, p95 frame time and entities', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('pirate-battle:options:v1', JSON.stringify({ sessionSec: 180, spawnIntervalSec: 0.5 }));
-    // keep the player alive and shooting so the match runs to the end with many entities
     window.addEventListener('keydown', () => undefined);
   });
   await page.goto('/?perf=1');

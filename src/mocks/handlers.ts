@@ -6,16 +6,15 @@ import { buildFixtures } from './fixtures';
 import { getScenario } from './scenarios';
 
 type Route = 'ranking' | 'history' | 'submit';
-const rng = createRng(7); // seeded: latency is reproducible
+const rng = createRng(7);
 
-/** Returns a response when the scenario short-circuits the request, or null to continue normally. */
 async function applyScenario(route: Route): Promise<Response | null> {
   switch (getScenario()) {
     case 'slow':
       await delay(2500);
       return null;
     case 'variable-latency':
-      await delay(100 + Math.floor(rng() * 2500)); // later requests may answer first
+      await delay(100 + Math.floor(rng() * 2500));
       return null;
     case 'timeout':
       await delay('infinite');
@@ -23,7 +22,7 @@ async function applyScenario(route: Route): Promise<Response | null> {
     case 'client-error':
       return HttpResponse.json({ message: 'Bad request' }, { status: 400 });
     case 'network-error':
-      return HttpResponse.error(); // connection failure (no HTTP response)
+      return HttpResponse.error();
     case 'server-error':
       return HttpResponse.json({ message: 'Internal error' }, { status: 500 });
     case 'ranking-error':
@@ -78,9 +77,9 @@ export const handlers = [
     const body = (await request.json()) as MatchRecord;
     const all = loadConfirmed();
     const existing = all.find((r) => r.id === params.id);
-    if (existing) return HttpResponse.json(existing, { status: 200 }); // idempotent: no duplicate
+    if (existing) return HttpResponse.json(existing, { status: 200 });
     saveConfirmed([...all, body]);
-    if (getScenario() === 'submit-timeout-after-commit') await delay('infinite'); // saved, but the client never hears back
+    if (getScenario() === 'submit-timeout-after-commit') await delay('infinite');
     return HttpResponse.json(body, { status: 201 });
   }),
 ];

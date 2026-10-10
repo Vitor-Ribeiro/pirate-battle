@@ -1,4 +1,3 @@
-/** Collects frame times during a match (enable with ?perf in the URL). Pure, so it is unit tested. */
 export interface PerfSummary {
   frames: number;
   durationSec: number;

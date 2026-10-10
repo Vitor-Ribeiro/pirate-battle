@@ -8,7 +8,6 @@ const NAMES = [
 ] as const;
 type SoundName = (typeof NAMES)[number];
 
-/** Optional sound. Failing to load audio never blocks the game. */
 export class GameAudio {
   private ctx: AudioContext | null = null;
   private readonly buffers = new Map<string, AudioBuffer>();
@@ -33,7 +32,6 @@ export class GameAudio {
       this.ambience?.stop();
       this.ambience = this.play('ocean_ambience_loop', 0.2, true);
     } catch {
-      /* sound is optional */
     }
   }
 

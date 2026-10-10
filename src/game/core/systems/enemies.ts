@@ -4,11 +4,10 @@ import { damagePlayer, spawnProjectile } from './combat';
 import { resolveShipTerrain } from './terrain';
 
 const AIM_TOLERANCE_RAD = 0.2;
-const SHOOTER_HOLD_RATIO = 0.7; // the Shooter stops approaching at 70% of its range
+const SHOOTER_HOLD_RATIO = 0.7;
 
 const AVOID_MARGIN_PX = 24;
 
-/** Heading toward the player, bent around an island that blocks the straight path (prevents ships getting stuck behind it). */
 function steerHeading(w: World, from: { x: number; y: number }, bodyRadius: number, to: { x: number; y: number }): number {
   const direct = angleTo(from, to);
   const total = distance(from, to);
@@ -17,7 +16,7 @@ function steerHeading(w: World, from: { x: number; y: number }, bodyRadius: numb
   for (const isl of w.state.islands) {
     const d = distance(from, isl);
     const clear = isl.radius + bodyRadius + AVOID_MARGIN_PX;
-    if (d >= total || d < 1) continue; // island is not between us and the target
+    if (d >= total || d < 1) continue;
     const toIsl = angleTo(from, isl);
     const off = normalizeAngle(direct - toIsl);
     const lateral = Math.abs(Math.sin(off)) * d;
@@ -29,7 +28,6 @@ function steerHeading(w: World, from: { x: number; y: number }, bodyRadius: numb
   return best;
 }
 
-/** Soft separation: overlapping enemies are pushed apart so they never stack on one spot. */
 function separateEnemies(w: World): void {
   const list = w.state.enemies;
   for (let i = 0; i < list.length; i++) {
@@ -43,7 +41,7 @@ function separateEnemies(w: World): void {
       let d = Math.hypot(dx, dy);
       const min = (a.radius + b.radius) * 0.9;
       if (d >= min) continue;
-      if (d < 0.001) { // exactly on top of each other: pick a stable direction
+      if (d < 0.001) {
         dx = Math.cos(a.id);
         dy = Math.sin(a.id);
         d = 1;
@@ -63,9 +61,9 @@ export function updateEnemies(w: World, dtMs: number): void {
   const dt = dtMs / 1000;
 
   for (const e of w.state.enemies) {
-    if (!e.alive) continue; // destroyed enemies never move, shoot or collide again
+    if (!e.alive) continue;
     e.cooldownsMs.front = Math.max(0, e.cooldownsMs.front - dtMs);
-    const target = angleTo(e.pos, player.pos); // used for aiming
+    const target = angleTo(e.pos, player.pos);
     const steer = steerHeading(w, e.pos, e.radius, player.pos);
 
     if (e.kind === 'chaser') {
@@ -76,7 +74,7 @@ export function updateEnemies(w: World, dtMs: number): void {
       resolveShipTerrain(w, e);
       if (player.alive && distance(e.pos, player.pos) <= e.radius + player.radius) {
         damagePlayer(w, cfg.contactDamage);
-        e.alive = false; // explodes on impact: no score for the player
+        e.alive = false;
         e.health = 0;
         w.state.events.push({ type: 'explosion', pos: { ...e.pos }, radius: e.radius * 2 });
       }

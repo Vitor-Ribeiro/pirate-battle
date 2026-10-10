@@ -26,7 +26,6 @@ export function damagePlayer(w: World, amount: number): void {
   }
 }
 
-/** Returns true when this damage destroyed the enemy. */
 export function damageEnemy(w: World, enemy: ShipState, amount: number): boolean {
   if (!enemy.alive) return false;
   enemy.health = Math.max(0, enemy.health - amount);

@@ -3,7 +3,6 @@ import type { MatchRecord } from '../api/contracts';
 
 const NAMES = ['Blackbeard', 'Anne Bonny', 'Calico Jack', 'Mary Read', 'Captain Kidd', 'Bartholomew', 'Grace', 'Redhand'];
 
-/** Deterministic fixtures for other players. */
 export function buildFixtures(count: number, config: { sessionSec: number; spawnIntervalSec: number }): MatchRecord[] {
   const rng = createRng(42);
   return Array.from({ length: count }, (_, i) => ({

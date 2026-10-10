@@ -1,4 +1,3 @@
-/** Small seeded PRNG (mulberry32): same seed, same match. Used by tests and fixtures. */
 export function createRng(seed: number): () => number {
   let a = seed >>> 0;
   return () => {

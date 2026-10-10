@@ -21,7 +21,6 @@ export function toRecord(result: MatchResult): MatchRecord {
   };
 }
 
-/** Registers a finished match once. Failures keep the record in the local pending queue (survives a refresh). */
 export function useMatchSubmission(result: MatchResult) {
   const mutation = useSubmitMatch();
   const pending = useSyncExternalStore(pendingStore.subscribe, pendingStore.getSnapshot);
@@ -30,11 +29,11 @@ export function useMatchSubmission(result: MatchResult) {
 
   const record = useRef<MatchRecord | null>(null);
   useEffect(() => {
-    if (startedFor.current === result.matchId) return; // Strict Mode runs effects twice
+    if (startedFor.current === result.matchId) return;
     startedFor.current = result.matchId;
     const existing = pending.find((r) => r.id === result.matchId);
     record.current = existing ?? toRecord(result);
-    enqueue(record.current); // saved BEFORE the request
+    enqueue(record.current);
     mutate(record.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result.matchId]);
@@ -47,7 +46,6 @@ export function useMatchSubmission(result: MatchResult) {
   return { status, retry };
 }
 
-/** Flushes records left from earlier sessions or failures (app start and on demand). */
 export function useFlushPending() {
   const mutation = useSubmitMatch();
   const pending = useSyncExternalStore(pendingStore.subscribe, pendingStore.getSnapshot);

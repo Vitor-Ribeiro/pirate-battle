@@ -17,11 +17,9 @@ const FIRE: [keyof Commands, string, string][] = [
 
 interface ButtonProps { command: keyof Commands; icon: string; label: string; getHost: () => GameHost | null }
 
-/** Each button owns its pointer, so moving and firing work at the same time (multi-touch). */
 function TouchButton({ command, icon, label, getHost }: ButtonProps) {
   const [pressed, setPressed] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
-  // iOS starts text selection / the magnifier on a long press unless touchstart is cancelled (needs a non-passive listener).
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -49,7 +47,6 @@ function TouchButton({ command, icon, label, getHost }: ButtonProps) {
         try {
           e.currentTarget.setPointerCapture(e.pointerId);
         } catch {
-          /* pointer already gone: still handle the press */
         }
         set(true);
       }}

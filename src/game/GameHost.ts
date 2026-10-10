@@ -16,13 +16,9 @@ interface HostCallbacks {
   onLoadProgress?: (ratio: number) => void;
 }
 
-const END_DELAY_MS = 900; // lets the final explosion play before the result screen
+const END_DELAY_MS = 900;
 const COMMAND_KEYS = Object.keys(NO_COMMANDS) as (keyof Commands)[];
 
-/**
- * Glue between the pure simulation, PixiJS, audio and input.
- * Strict Mode safe: dispose() can run while start() is still awaiting.
- */
 export class GameHost {
   private app: Application | null = null;
   private sim: Simulation | null = null;
@@ -65,7 +61,7 @@ export class GameHost {
       background: 0x1d7fa8,
     });
     if (this.disposed) {
-      app.destroy(true, { children: true }); // unmounted while initializing (Strict Mode)
+      app.destroy(true, { children: true });
       return;
     }
     this.app = app;
@@ -104,7 +100,7 @@ export class GameHost {
     if (!this.sim) return;
     const s = this.sim.getState();
     if (!force && s.elapsedMs - this.lastHudMs < 100 && s.status !== 'ended') return;
-    this.lastHudMs = s.elapsedMs; // ~10 Hz, never every frame
+    this.lastHudMs = s.elapsedMs;
     hudStore.publish({
       score: s.score,
       timeLeftSec: Math.max(0, Math.ceil(this.config.session.durationSec - s.elapsedMs / 1000)),
@@ -116,7 +112,7 @@ export class GameHost {
 
   private readonly tick = (): void => {
     if (!this.app || !this.sim || !this.renderer) return;
-    const dt = this.manualClock ? 0 : this.app.ticker.deltaMS; // with a manual clock the test advances time
+    const dt = this.manualClock ? 0 : this.app.ticker.deltaMS;
     this.sim.step(dt, this.mergeInput());
     const s = this.sim.getState();
     if (s.status === 'running') this.perf?.sample(this.app.ticker.deltaMS, s.enemies.length + s.projectiles.length + 1);
@@ -140,7 +136,6 @@ export class GameHost {
     }
   };
 
-  /** Test instrumentation (E2E builds only). It observes state and drives the clock; it does not change the rules. */
   private createTestApi(): TestApi {
     const sim = (): Simulation => {
       if (!this.sim) throw new Error('No match is running');
@@ -155,7 +150,6 @@ export class GameHost {
           sim().step(dt, this.mergeInput());
           pendingDt += dt;
           const s = sim().getState();
-          // Drawing every 16 ms step is slow under software WebGL; draw about every 160 ms and at the end.
           if (i % 10 === 9 || t + step >= ms || s.status !== 'running') {
             this.renderer?.sync(s, pendingDt);
             this.audio.handle(s.events);
@@ -197,7 +191,6 @@ export class GameHost {
   };
   private readonly onBlur = (): void => this.pause();
 
-  /** Phones report the new size late after a rotation or when the browser bars move, so re-measure a few times. */
   private readonly onViewport = (): void => {
     window.clearTimeout(this.resizeTimer);
     const measure = (): void => this.app?.resize();
@@ -216,7 +209,6 @@ export class GameHost {
     this.publishHud(true);
   }
 
-  /** Needs a player action. Nothing pressed or fired during the pause is carried over. */
   resume(): void {
     if (this.sim?.getState().status !== 'paused') return;
     this.keyboard.clear();

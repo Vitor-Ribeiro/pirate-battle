@@ -2,7 +2,6 @@ import { DEFAULT_OPTIONS, validateOptions, type UserOptions } from '../game/conf
 
 const KEY = 'pirate-battle:options:v1';
 
-/** Reads saved options; falls back to defaults if missing, corrupted or out of range. */
 export function loadOptions(): UserOptions {
   try {
     const raw = localStorage.getItem(KEY);

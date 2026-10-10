@@ -1,6 +1,5 @@
 import { NO_COMMANDS, type Commands } from '../core/types';
 
-// Keys are captured only while the gameplay context is attached.
 const KEY_MAP: Record<string, keyof Commands> = {
   KeyW: 'forward', ArrowUp: 'forward',
   KeyA: 'turnLeft', ArrowLeft: 'turnLeft',
@@ -33,7 +32,6 @@ export class KeyboardInput {
     this.clear();
   }
 
-  /** Call on resume so nothing pressed during the pause is carried over. */
   clear(): void {
     Object.assign(this.commands, NO_COMMANDS);
   }

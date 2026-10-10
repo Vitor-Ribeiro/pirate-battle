@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { invalidateLists } from '../api/queries';
 import { getScenario, resetMocks, SCENARIOS, setScenario, type ScenarioName } from '../mocks/scenarios';
 
-/** Developer panel: choose a network scenario and reset the mock backend. Works in the published build. */
 export function ScenarioPicker() {
   const client = useQueryClient();
   const [value, setValue] = useState<ScenarioName>(getScenario());
@@ -11,7 +10,7 @@ export function ScenarioPicker() {
   const change = (name: ScenarioName) => {
     setScenario(name);
     const url = new URL(window.location.href);
-    if (url.searchParams.has('scenario')) { // the URL parameter would win over the selection
+    if (url.searchParams.has('scenario')) {
       url.searchParams.delete('scenario');
       window.history.replaceState(null, '', url);
     }

@@ -4,7 +4,7 @@ Top-down naval shooter built with React, TypeScript (strict), PixiJS, TanStack Q
 
 **Live demo:** https://pirate-battle-green.vercel.app (ranking and match history use mocked APIs, MSW runs in the published build)
 
-
+> AI usage: this project was built with AI assistance (allowed by the challenge); the author reviews and owns the code.
 
 Documentation: [`ARCHITECTURE.md`](ARCHITECTURE.md) (design decisions), [`docs/performance.md`](docs/performance.md) (profiling evidence), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (requirements), [`LICENSES.md`](LICENSES.md) (assets).
 
@@ -78,7 +78,7 @@ session 60 to 180 s, enemy spawn interval 0.5 to 10 s. Each match uses a snapsho
 Pick a scenario with `?scenario=<name>` in the URL (for example `/?scenario=slow`) or with `setScenario()`.
 Reset the mocks with `resetMocks()` (clears the scenario and the stored mock data).
 
-`success`, `empty`, `many-pages` (60 entries), `slow`, `variable-latency` (60 entries, answers arrive out of order), `timeout`, `server-error` (500), `client-error` (400), `network-error` (connection failure), `ranking-error`,
+`success`, `empty` (ranking and history always empty, even if you have played), `many-pages` (60 entries), `slow`, `variable-latency` (60 entries, answers arrive out of order), `timeout`, `server-error` (500), `client-error` (400), `network-error` (connection failure), `ranking-error`,
 `history-error`, `submit-timeout-after-commit`, `submit-unavailable`.
 
 The main menu has a scenario selector. To reproduce a failure: pick `ranking-error` (ranking fails, history works),

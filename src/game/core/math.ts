@@ -16,7 +16,6 @@ export function distance(a: Vec2, b: Vec2): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-/** Rotates `current` toward `target` by at most `maxDelta` radians (shortest way). */
 export function turnToward(current: number, target: number, maxDelta: number): number {
   const d = normalizeAngle(target - current);
   if (Math.abs(d) <= maxDelta) return normalizeAngle(target);
@@ -25,7 +24,6 @@ export function turnToward(current: number, target: number, maxDelta: number): n
 
 export interface Circle { x: number; y: number; radius: number }
 
-/** Moves `pos` out of the circle if a body of `radius` overlaps it. Returns true when it moved. */
 export function pushOutOfCircle(pos: Vec2, radius: number, c: Circle): boolean {
   const dx = pos.x - c.x;
   const dy = pos.y - c.y;

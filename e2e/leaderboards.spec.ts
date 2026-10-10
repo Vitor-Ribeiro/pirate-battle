@@ -39,7 +39,7 @@ test.describe('ranking', () => {
 
   test('late responses never overwrite newer pages', async ({ page }) => {
     await prepare(page, { scenario: 'many-pages', sessionSec: 120, spawnIntervalSec: 2 });
-    await page.goto('/?scenario=variable-latency'); // answers come back in a different order than requested
+    await page.goto('/?scenario=variable-latency');
     const next = page.getByRole('button', { name: 'Next' });
     const prev = page.getByRole('button', { name: 'Previous' });
     await expect(next).toBeEnabled({ timeout: 15_000 });
@@ -74,7 +74,7 @@ test.describe('registering a match', () => {
     await expect(page.getByTestId('history-panel').locator('tbody tr')).toHaveCount(1);
 
     await showTab(page, 'Ranking');
-    await expect(page.getByTestId('ranking-panel').getByText('You')).toHaveCount(0); // 13 entries: "You" is on page 2
+    await expect(page.getByTestId('ranking-panel').getByText('You')).toHaveCount(0);
     await page.getByRole('button', { name: 'Next' }).click();
     await expect(page.getByTestId('ranking-panel').getByText('You')).toHaveCount(1);
   });
@@ -106,7 +106,6 @@ test.describe('registering a match', () => {
     test.setTimeout(90_000);
     await startMatch(page, { scenario: 'submit-timeout-after-commit' });
     await finishMatchByTime(page);
-    // The first request times out (the server already saved it); the retry gets the existing record back.
     await expect(page.getByTestId('submit-status')).toContainText('Match saved', { timeout: 30_000 });
     await page.getByRole('button', { name: 'Main Menu' }).click();
     await showTab(page, 'Match History');

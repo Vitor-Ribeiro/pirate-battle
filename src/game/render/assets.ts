@@ -4,7 +4,6 @@ const base = import.meta.env.BASE_URL;
 const url = (path: string): string => `${base}assets/${path}`;
 
 type ShipKind = 'player' | 'chaser' | 'shooter';
-/** Ship art: 6 colors x 4 damage stages. Stage n of color c is ship_(c + 6n). */
 const SHIP_COLOR: Record<ShipKind, number> = { player: 5, chaser: 3, shooter: 2 };
 export const SHIP_STAGES = 4;
 
@@ -30,10 +29,6 @@ for (const kind of Object.keys(SHIP_COLOR) as ShipKind[]) {
 const textures = new Map<string, Texture>();
 const tileCache = new Map<string, Texture>();
 
-/**
- * Loads every texture once and reuses it between matches (textures are never destroyed on exit).
- * Rejects with a readable error so the UI can show "Retry".
- */
 export async function loadAssets(onProgress: (ratio: number) => void): Promise<void> {
   const entries = Object.entries(ASSET_URLS).filter(([key]) => !textures.has(key));
   let done = 0;
@@ -64,7 +59,6 @@ export function shipTexture(kind: ShipKind, stage: number): Texture {
   return tex(`ship_${kind}_${Math.min(Math.max(stage, 0), SHIP_STAGES - 1)}`);
 }
 
-/** One 128x128 tile of the retina sheet (a 64 px tile in world units) by column and row. */
 export function tile(col: number, row: number): Texture {
   const key = `${col},${row}`;
   const cached = tileCache.get(key);

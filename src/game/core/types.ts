@@ -1,5 +1,3 @@
-// Pure game types. No PixiJS and no React in src/game/core.
-
 export interface Vec2 { x: number; y: number }
 
 export type EndReason = 'time_up' | 'player_destroyed';
@@ -34,7 +32,6 @@ export interface ShipCooldowns { front: number; left: number; right: number }
 
 export interface Island { x: number; y: number; radius: number }
 
-/** One-step events for the renderer (effects, sounds). Cleared at the start of every step(). */
 export type GameEvent =
   | { type: 'shot'; owner: 'player' | 'enemy'; pos: Vec2; heading: number }
   | { type: 'hit'; target: 'player' | 'enemy'; pos: Vec2 }
@@ -65,7 +62,6 @@ export interface MatchState {
   endReason: EndReason | null;
 }
 
-/** What the UI and the API need after a match ends. */
 export interface MatchResult {
   matchId: string;
   score: number;
@@ -76,7 +72,6 @@ export interface MatchResult {
 }
 
 export interface Simulation {
-  /** Advances the world by dtMs. Does nothing while paused or ended. */
   step(dtMs: number, commands: Commands): void;
   getState(): Readonly<MatchState>;
   pause(): void;

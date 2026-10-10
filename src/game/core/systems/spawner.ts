@@ -10,7 +10,6 @@ function aliveEnemies(w: World): number {
   return w.state.enemies.reduce((n, e) => n + (e.alive ? 1 : 0), 0);
 }
 
-/** Picks the type that is furthest behind its weight, so both types appear in a normal match. */
 function pickKind(w: World): 'chaser' | 'shooter' {
   const weights = w.config.spawn.weights;
   const need = (count: number, weight: number): number => (weight > 0 ? count / weight : Infinity);
@@ -33,7 +32,6 @@ function createEnemy(w: World, kind: Exclude<ShipKind, 'player'>, x: number, y: 
   };
 }
 
-/** A spawn point must be inside the arena, away from islands and far from the player. */
 function findSpawnPoint(w: World, radius: number): { x: number; y: number } | null {
   const { arena, spawn } = w.config;
   const margin = radius + EDGE_MARGIN_PX;
@@ -46,7 +44,6 @@ function findSpawnPoint(w: World, radius: number): { x: number; y: number } | nu
   return null;
 }
 
-/** Accumulates time, so the spawn rate does not depend on the frame rate. */
 export function updateSpawner(w: World, dtMs: number): void {
   const intervalMs = w.config.spawn.intervalSec * 1000;
   w.spawnTimerMs += dtMs;

@@ -1,8 +1,6 @@
 import { expect, test } from './fixtures';
 import { advance, prepare, startMatch } from './helpers';
 
-// Baselines are versioned in e2e/__screenshots__/<project>/. Generate them once with `npm run test:e2e:update`
-// and review the images. Always generate and run them on the same OS (see README).
 test('visual: main menu', async ({ page }) => {
   await prepare(page, { scenario: 'success', sessionSec: 120, spawnIntervalSec: 2 });
   await page.goto('/');

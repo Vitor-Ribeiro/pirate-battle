@@ -1,8 +1,6 @@
 import { expect, test } from './fixtures';
 import { addEnemy, advance, advanceAndGet, finishMatchByTime, getState, setPlayer, startMatch } from './helpers';
 
-// Initial state: player at the arena center (800, 450), heading up. Islands: (480,300,r112) and (1150,620,r84).
-
 test.describe('movement and arena', () => {
   test('moves forward and rotates with the keyboard', async ({ page }) => {
     await startMatch(page);
@@ -30,7 +28,7 @@ test.describe('movement and arena', () => {
 
   test('cannot cross an island', async ({ page }) => {
     await startMatch(page);
-    await setPlayer(page, { x: 1150, y: 470, heading: Math.PI / 2 }); // facing the second island
+    await setPlayer(page, { x: 1150, y: 470, heading: Math.PI / 2 });
     await page.keyboard.down('KeyW');
     await advance(page, 4000);
     await page.keyboard.up('KeyW');
@@ -42,11 +40,11 @@ test.describe('movement and arena', () => {
 test.describe('weapons and scoring', () => {
   test('front weapon respects its cooldown', async ({ page }) => {
     await startMatch(page);
-    await setPlayer(page, { y: 850 }); // low in the arena, so the first shot is still inside it after 1 s (520 px/s)
+    await setPlayer(page, { y: 850 });
     await page.keyboard.down('Space');
     await advance(page, 1000);
     await page.keyboard.up('Space');
-    expect((await getState(page)).projectiles.length).toBe(3); // 350 ms cooldown: shots at 0, 350 and 700 ms
+    expect((await getState(page)).projectiles.length).toBe(3);
   });
 
   test('side weapon fires three parallel projectiles and respects its cooldown', async ({ page }) => {
@@ -60,15 +58,15 @@ test.describe('weapons and scoring', () => {
       expect(p!.vel.x).toBeCloseTo(a!.vel.x, 5);
       expect(p!.vel.y).toBeCloseTo(a!.vel.y, 5);
     }
-    await advance(page, 1250); // still inside the 1400 ms cooldown
+    await advance(page, 1250);
     await page.keyboard.up('KeyQ');
     const ids = (await getState(page)).projectiles.map((p) => p.id);
-    expect(Math.max(0, ...ids)).toBeLessThanOrEqual(4); // no second broadside yet (ids 2, 3, 4)
+    expect(Math.max(0, ...ids)).toBeLessThanOrEqual(4);
   });
 
   test('a destroyed enemy scores exactly once', async ({ page }) => {
     await startMatch(page);
-    await addEnemy(page, 'shooter', 800, 300, Math.PI / 2); // straight ahead of the bow
+    await addEnemy(page, 'shooter', 800, 300, Math.PI / 2);
     await page.keyboard.down('Space');
     await advance(page, 4000);
     expect((await getState(page)).score).toBe(1);
@@ -82,8 +80,8 @@ test.describe('weapons and scoring', () => {
 
   test('islands block projectiles', async ({ page }) => {
     await startMatch(page);
-    await setPlayer(page, { x: 480, y: 560, heading: -Math.PI / 2 }); // island 1 is straight ahead
-    await addEnemy(page, 'shooter', 480, 120, Math.PI / 2); // behind the island
+    await setPlayer(page, { x: 480, y: 560, heading: -Math.PI / 2 });
+    await addEnemy(page, 'shooter', 480, 120, Math.PI / 2);
     await page.keyboard.down('Space');
     await advance(page, 2000);
     await page.keyboard.up('Space');
@@ -104,7 +102,7 @@ test.describe('enemies and spawns', () => {
 
   test('a Shooter in range fires at the player', async ({ page }) => {
     await startMatch(page);
-    await addEnemy(page, 'shooter', 800, 250, Math.PI / 2); // already facing the player, inside its range
+    await addEnemy(page, 'shooter', 800, 250, Math.PI / 2);
     await advance(page, 800);
     const s = await getState(page);
     expect(s.projectiles.some((p) => p.owner === 'enemy') || s.player.health < 100).toBe(true);
@@ -140,7 +138,6 @@ test.describe('end of match', () => {
   test('ends by time, stops the simulation and shows the result', async ({ page }) => {
     await startMatch(page);
     await setPlayer(page, { health: 1e9, maxHealth: 1e9 });
-    // One synchronous evaluate: the app leaves the match screen (and removes window.__pb) after the end, so read everything first.
     const { ended, later } = await page.evaluate(() => {
       const pb = window.__pb!;
       pb.advance(60_500);
@@ -222,7 +219,7 @@ test.describe('pause, focus and abandon', () => {
     await page.waitForTimeout(400);
     const resumed = (await getState(page)).elapsedMs;
     const realElapsed = Date.now() - t0;
-    expect(resumed - paused).toBeLessThanOrEqual(realElapsed + 150); // the 1200 ms spent paused were not added
+    expect(resumed - paused).toBeLessThanOrEqual(realElapsed + 150);
 
     await page.evaluate(() => {
       Object.defineProperty(document, 'hidden', { value: true, configurable: true });

@@ -4,7 +4,6 @@ import { App } from './App';
 import { Providers } from './app/Providers';
 import './styles/global.css';
 
-// Mocks run in the published build too. If the worker cannot start, the app still opens (requests then fail visibly).
 async function enableMocks(): Promise<void> {
   if (import.meta.env.VITE_ENABLE_MSW === 'false') return;
   try {

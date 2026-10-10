@@ -37,11 +37,9 @@ progress { width: 100%; height: 14px; }
 .touch-button { width: 64px; height: 64px; touch-action: none; user-select: none; -webkit-user-select: none; }
 .touch-button { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 .touch-button img { pointer-events: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
-/* In a match nothing should be selectable, draggable or open the image menu (iOS Safari / Chrome). */
 .arena, .arena *, .hud, .hud *, .touch-controls, .touch-controls * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 .arena img, .hud img, .touch-controls img { -webkit-user-drag: none; }
 @media (pointer: coarse) { .touch-controls { display: flex; } }
-/* Portrait phones (about 360 to 430 px): six buttons must fit in one row. */
 @media (max-width: 480px) { .touch-group { gap: 6px; } .touch-button { width: 48px; height: 48px; } .touch-button img { width: 28px; height: 28px; } .touch-controls { padding-left: calc(env(safe-area-inset-left, 0px) + 8px); padding-right: calc(env(safe-area-inset-right, 0px) + 8px); } }
 
 .muted { color: var(--muted); }
@@ -51,7 +49,6 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--mute
 .pager { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
 [role='tab'] { margin-right: 6px; }
 [role='tab'][aria-selected='true'] { border: 2px solid var(--accent); }
-/* Portrait phones: keep the HUD in a single row (health bar + score + time + pause). */
 @media (max-width: 480px) {
   .hud { flex-wrap: nowrap; gap: 4px; padding-left: calc(env(safe-area-inset-left, 0px) + 8px); padding-right: calc(env(safe-area-inset-right, 0px) + 8px); }
   .hud-health { transform: scale(0.5); transform-origin: top left; margin-right: -128px; margin-bottom: -24px; }
@@ -61,14 +58,11 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--mute
   .hud-pause { width: 40px; height: 40px; }
   .hud-pause img { width: 24px; height: 24px; }
 }
-/* Phones on their side: the 16:9 arena leaves dark bands left and right, so stack each button group
-   vertically inside them instead of covering the sea. */
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
   .touch-controls { align-items: flex-end; padding-left: calc(env(safe-area-inset-left, 0px) + 6px); padding-right: calc(env(safe-area-inset-right, 0px) + 6px); }
   .touch-group { flex-direction: column; gap: 6px; }
   .touch-button { width: 48px; height: 48px; opacity: 0.9; }
   .touch-button img { width: 28px; height: 28px; }
-  /* Compact HUD in the 48 px strip above the arena (ArenaRenderer reserves it). */
   .hud { padding-top: 4px; align-items: center; }
   .hud-health { transform: scale(0.75); transform-origin: top left; margin-right: -64px; margin-bottom: -12px; }
   .hud-counter { height: 36px; width: 96px; }

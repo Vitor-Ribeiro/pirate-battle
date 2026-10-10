@@ -1,5 +1,3 @@
-// Reproducible network scenarios. Select with ?scenario=<name> or setScenario(); reset with resetMocks().
-
 export const SCENARIOS = [
   'success',
   'empty',
@@ -29,7 +27,6 @@ export function setScenario(name: ScenarioName): void {
   localStorage.setItem(KEY, name);
 }
 
-/** Restores the initial state: scenario "success" and no stored mock data. */
 export function resetMocks(): void {
   localStorage.removeItem(KEY);
   localStorage.removeItem('pirate-battle:mock-db:v1');
