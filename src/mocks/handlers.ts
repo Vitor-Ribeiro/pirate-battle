@@ -56,7 +56,7 @@ export const handlers = [
     const config = { sessionSec, spawnIntervalSec };
     const scenario = getScenario();
     const fixtures = scenario === 'empty' ? [] : buildFixtures(scenario === 'many-pages' || scenario === 'variable-latency' ? 60 : 12, config);
-    const mine = loadConfirmed().filter((r) => r.config.sessionSec === sessionSec && r.config.spawnIntervalSec === spawnIntervalSec);
+    const mine = scenario === 'empty' ? [] : loadConfirmed().filter((r) => r.config.sessionSec === sessionSec && r.config.spawnIntervalSec === spawnIntervalSec);
     const sorted = [...fixtures, ...mine].sort(compareRanking).map((r, i) => ({ ...r, rank: i + 1 }));
     return HttpResponse.json(paginate(sorted, numberParam(url, 'page', 1), numberParam(url, 'pageSize', 10)));
   }),
@@ -66,7 +66,7 @@ export const handlers = [
     if (early) return early;
     const url = new URL(request.url);
     const playerId = url.searchParams.get('playerId');
-    const mine = loadConfirmed()
+    const mine = (getScenario() === 'empty' ? [] : loadConfirmed())
       .filter((r) => r.playerId === playerId)
       .sort((a, b) => b.playedAt.localeCompare(a.playedAt));
     return HttpResponse.json(paginate(mine, numberParam(url, 'page', 1), numberParam(url, 'pageSize', 10)));
